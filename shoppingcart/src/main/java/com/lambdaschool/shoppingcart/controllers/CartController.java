@@ -66,29 +66,35 @@ public class CartController
 
     @PutMapping(value = "/update/cart/{cartid}/product/{productid}")
     public ResponseEntity<?> updateCart(@PathVariable long cartid,
-                                        @PathVariable long productid)
+                                        @PathVariable long productid,
+                                        Authentication authentication)
     {
-        Cart dataCart = new Cart();
-        dataCart.setCartid(cartid);
+
+        User user = new User();
+        user = userService.findByUsername(authentication.getName());
 
         Product dataProduct = new Product();
         dataProduct.setProductid(productid);
 
-        cartService.save(dataCart, dataProduct);
+        cartService.save(user, dataProduct);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/cart/{cartid}/product/{productid}")
     public ResponseEntity<?> deleteFromCart(@PathVariable long cartid,
-                                            @PathVariable long productid)
+                                            @PathVariable long productid,
+                                            Authentication authentication)
     {
+        User user = new User();
+        user = userService.findByUsername(authentication.getName());
+
         Cart dataCart = new Cart();
         dataCart.setCartid(cartid);
 
         Product dataProduct = new Product();
         dataProduct.setProductid(productid);
 
-        cartService.delete(dataCart, dataProduct);
+        cartService.delete(user, dataCart, dataProduct);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

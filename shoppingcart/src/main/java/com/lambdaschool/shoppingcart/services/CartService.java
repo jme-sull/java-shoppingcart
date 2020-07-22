@@ -60,6 +60,6 @@ public interface CartService
      * @param cart    the cart to lose the product
      * @param product the product to be removed
      */
-    void delete(Cart cart,
+    void delete(User user, Cart cart,
                 Product product);
 }
