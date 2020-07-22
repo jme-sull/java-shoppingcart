@@ -73,10 +73,13 @@ public class CartController
         User user = new User();
         user = userService.findByUsername(authentication.getName());
 
+        Cart dataCart = new Cart ();
+        dataCart.setCartid(cartid);
+
         Product dataProduct = new Product();
         dataProduct.setProductid(productid);
 
-        cartService.save(user, dataProduct);
+        cartService.save(user, dataCart, dataProduct);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

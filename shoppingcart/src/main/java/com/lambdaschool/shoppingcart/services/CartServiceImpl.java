@@ -88,26 +88,38 @@ public class CartServiceImpl
 
     @Transactional
     @Override
-    public Cart save(Cart cart,
+    public Cart save(User user, Cart cart,
                      Product product)
     {
-        Cart updateCart = cartrepos.findById(cart.getCartid())
+        if (helperFunctions.isAuthorizedToMakeChange(user.getUsername()))
+        {
+            Cart updateCart = cartrepos.findById(cart.getCartid())
                 .orElseThrow(() -> new ResourceNotFoundException("Cart Id " + cart.getCartid() + " not found"));
-        Product updateProduct = productrepos.findById(product.getProductid())
+            Product updateProduct = productrepos.findById(product.getProductid())
                 .orElseThrow(() -> new ResourceNotFoundException("Product id " + product.getProductid() + " not found"));
 
-        if (cartrepos.checkCartItems(updateCart.getCartid(), updateProduct.getProductid())
+            if (cartrepos.checkCartItems(updateCart.getCartid(),
+                updateProduct.getProductid())
                 .getCount() > 0)
-        {
-            cartrepos.updateCartItemsQuantity(userAuditing.getCurrentAuditor()
-                                                      .get(), updateCart.getCartid(), updateProduct.getProductid(), 1);
-        } else
-        {
-            cartrepos.addCartItems(userAuditing.getCurrentAuditor()
-                                           .get(), updateCart.getCartid(), updateProduct.getProductid());
+            {
+                cartrepos.updateCartItemsQuantity(userAuditing.getCurrentAuditor()
+                        .get(),
+                    updateCart.getCartid(),
+                    updateProduct.getProductid(),
+                    1);
+            } else
+            {
+                cartrepos.addCartItems(userAuditing.getCurrentAuditor()
+                        .get(),
+                    updateCart.getCartid(),
+                    updateProduct.getProductid());
+            }
+
+            return cartrepos.save(updateCart);
         }
 
-        return cartrepos.save(updateCart);
+        else
+            return null;
     }
 
     @Transactional
