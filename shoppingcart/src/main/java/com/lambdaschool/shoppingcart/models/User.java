@@ -36,6 +36,7 @@ public class User
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+
     private String comments;
 
     @OneToMany(mappedBy = "user",
@@ -104,6 +105,11 @@ public class User
     {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.password = passwordEncoder.encode(password);
+    }
+
+    public void setPasswordNoEncrypt(String password)
+    {
+        this.password = password;
     }
 
     public Set<UserRoles> getRoles()
